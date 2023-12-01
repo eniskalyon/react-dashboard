@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineMenu } from 'react-icons/ai';
 import { FiShoppingCart } from 'react-icons/fi';
 import { BsChatLeft } from 'react-icons/bs';
@@ -22,7 +22,20 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 
 const Navbar = () => {
 
-  const { activeMenu, setActiveMenu, isClicked, setIsClicked, handleClick, screenSize, setScreenSize } = useStateContext();
+  const { activeMenu, setActiveMenu, isClicked, setIsClicked, handleClick, screenSize, setScreenSize, currentColor } = useStateContext();
+
+  const [isCartPopupVisible, setIsCartPopupVisible] = useState(false);
+
+  const handleCartIconClick = () => {
+    // Toggle the cart popup visibility
+    setIsCartPopupVisible(prev => !prev);
+  };
+
+  const handleCloseCart = () => {
+    setIsCartPopupVisible(false);
+  };
+
+  
 
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
@@ -42,27 +55,29 @@ const Navbar = () => {
 
   return (
     <div className='flex justify-between p-2 md:mx-6 relative'>
-      <NavButton title='Menu' customFunc={() => setActiveMenu((prevActiveMenu) => !prevActiveMenu)} color='blue' icon={<AiOutlineMenu />}/>
+      <NavButton title='Menu' customFunc={() => setActiveMenu((prevActiveMenu) => !prevActiveMenu)} color={currentColor} icon={<AiOutlineMenu />}/>
    
     <div className='flex'>
-    <NavButton
+   <NavButton
     title='Cart'
-    customFunc={() => handleClick('cart')}
-    color='blue'
-    icon={<FiShoppingCart />}/>
+    customFunc={handleCartIconClick}
+    color={currentColor}
+    icon={<FiShoppingCart />}
+    
+    />
 
 <NavButton
     title='Chat'
     dotColor='#03C9D7'
     customFunc={() => handleClick('chat')}
-    color='blue'
+    color={currentColor}
     icon={<BsChatLeft />}/>
 
 <NavButton
     title='Notifications'
     dotColor='#03C9D7'
     customFunc={() => handleClick('notification')}
-    color='blue'
+    color={currentColor}
     icon={<RiNotification3Line />}/>
 
     <TooltipComponent
@@ -85,7 +100,7 @@ const Navbar = () => {
       </div>
     </TooltipComponent>
 
-    {isClicked.cart && <Cart />}
+    {isCartPopupVisible && <Cart onClose={handleCloseCart} />}
     {isClicked.chat && <Chat />}
     {isClicked.notification && <Notification />}
     {isClicked.userProfile && <UserProfile />}
