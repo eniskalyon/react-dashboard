@@ -1,29 +1,15 @@
 import React, { useRef, useEffect } from 'react';
 import { MdOutlineCancel } from 'react-icons/md';
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
-
+import useOutsideAlerter from '../hooks/useOutsideAlerter'
 import { useStateContext } from '../contexts/ContextProvider';
 import { cartData } from '../data/dummy';
 import { Button } from '.';
 
 const Cart = ({onClose}) => {
   const { currentColor } = useStateContext();
-  const popupRef = useRef();
+  const popupRef = useOutsideAlerter(onClose);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-
-        onClose();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
 
   return (

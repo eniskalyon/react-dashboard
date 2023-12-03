@@ -24,17 +24,12 @@ const Navbar = () => {
 
   const { activeMenu, setActiveMenu, isClicked, setIsClicked, handleClick, screenSize, setScreenSize, currentColor } = useStateContext();
 
-  const [isCartPopupVisible, setIsCartPopupVisible] = useState(false);
+ 
+  const [activeComponent, setActiveComponent] = useState(null);
 
-  const handleCartIconClick = () => {
-    // Toggle the cart popup visibility
-    setIsCartPopupVisible(prev => !prev);
+  const handleComponentToggle = (componentName) => {
+    setActiveComponent(prev => prev === componentName ? null : componentName);
   };
-
-  const handleCloseCart = () => {
-    setIsCartPopupVisible(false);
-  };
-
   
 
   useEffect(() => {
@@ -60,7 +55,7 @@ const Navbar = () => {
     <div className='flex'>
    <NavButton
     title='Cart'
-    customFunc={handleCartIconClick}
+    customFunc={() => handleComponentToggle('cart')}
     color={currentColor}
     icon={<FiShoppingCart />}
     
@@ -69,24 +64,26 @@ const Navbar = () => {
 <NavButton
     title='Chat'
     dotColor='#03C9D7'
-    customFunc={() => handleClick('chat')}
+    customFunc={() => handleComponentToggle('chat')}
     color={currentColor}
     icon={<BsChatLeft />}/>
 
 <NavButton
     title='Notifications'
     dotColor='#03C9D7'
-    customFunc={() => handleClick('notification')}
+    customFunc={() => handleComponentToggle('notification')}
     color={currentColor}
     icon={<RiNotification3Line />}/>
 
     <TooltipComponent
     content='Profile'
     position='BottomCenter'
+   
+
     >
       <div
       className='flex items-center gap-2cursor-pointer p-1 hover:bg-light-gray rounded-lg'
-      onClick={() => handleClick('userProfile')}
+      onClick={() => handleComponentToggle('userProfile')}
       >
         <img
         src={avatar}
@@ -100,10 +97,10 @@ const Navbar = () => {
       </div>
     </TooltipComponent>
 
-    {isCartPopupVisible && <Cart onClose={handleCloseCart} />}
-    {isClicked.chat && <Chat />}
-    {isClicked.notification && <Notification />}
-    {isClicked.userProfile && <UserProfile />}
+    {activeComponent === 'cart' && <Cart onClose={() => setActiveComponent(null)} />}
+    {activeComponent === 'chat' && <Chat onClose={() => setActiveComponent(null)} />}
+    {activeComponent === 'notification' && <Notification onClose={() => setActiveComponent(null)} />}
+    {activeComponent === 'userProfile' && <UserProfile onClose={() => setActiveComponent(null)} />}
 
     </div>
     </div>
